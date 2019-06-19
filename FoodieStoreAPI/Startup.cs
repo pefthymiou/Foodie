@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using FoodieStoreAPI.Repositories;
@@ -28,8 +30,12 @@ namespace FoodieStoreAPI
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+      services.AddTransient<IDbConnection>(options => new SqlConnection(this.Configuration.GetConnectionString("DefaultConnection")));
       services.AddTransient<ICustomerService, CustomerService>();
+      services.AddTransient<IProductService, ProductService>();
       services.AddTransient<ICustomerRepository, CustomerRepository>();
+      services.AddTransient<IProductRepository, ProductRepository>();
+     
 
       services.AddSwaggerGen(s =>
       {

@@ -8,7 +8,12 @@ namespace FoodieStoreAPI.Models
 {
   public class Customer
   {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    internal Customer()
+    {
+      CustomerId = Guid.NewGuid();
+    }
+
+    //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid CustomerId { get; set; }
     public string Firstname { get; set; }
     public string Lastname { get; set; }
@@ -18,5 +23,7 @@ namespace FoodieStoreAPI.Models
     public string City { get; set; }
     public string PostalCode { get; set; }
     public string Telephone { get; set; }
+
+    //public List<Order> Orders { get; set; }
   }
 }

@@ -11,20 +11,20 @@ namespace FoodieStoreAPI.Repositories
 {
   public class CustomerRepository : ICustomerRepository
   {
-    private readonly string _connectionString;
-    private IDbConnection _connection { get { return new SqlConnection(_connectionString); } }
+    private readonly IDbConnection _connection;
 
-    public CustomerRepository()
+    public CustomerRepository(IDbConnection connection)
     {
-      _connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=FoodieStoreCore;Trusted_Connection=True;";
+      _connection = connection;
     }
+
     public async Task AddCustomerAsync(Customer customer)
     {
       using (IDbConnection dbConnection = _connection)
       {
         string query = @"INSERT INTO Customers
-                         (Firstname, Lastname, Email, Password, Address, City, PostalCode, Telephone)
-                         VALUES(@Firstname, @Lastname, @Email, @Password, @Address, @City, @PostalCode, @Telephone)";
+                         (CustomerId, Firstname, Lastname, Email, Password, Address, City, PostalCode, Telephone)
+                         VALUES(@CustomerId ,@Firstname, @Lastname, @Email, @Password, @Address, @City, @PostalCode, @Telephone)";
 
         await dbConnection.ExecuteAsync(query, customer);
       }
@@ -46,7 +46,7 @@ namespace FoodieStoreAPI.Repositories
       using (IDbConnection dbConnection = _connection)
       {
         string query = @"SELECT * FROM Customers";
-        var customers = await dbConnection.QueryAsync<Customer>(query);
+        var customers = await _connection.QueryAsync<Customer>(query);
         return customers;
       }
     }
@@ -56,9 +56,16 @@ namespace FoodieStoreAPI.Repositories
       throw new NotImplementedException();
     }
 
-    public void UpdateCustomer(Customer customer)
+    public async Task UpdateCustomer(Customer customer)
     {
-      throw new NotImplementedException();
+      using (IDbConnection dbConnection = _connection)
+      {
+        string query = @"UPDATE Customers
+                      SET Address=@Address, City=@City, PostalCode=@PostalCode, Telephone=@Telephone
+                      WHERE CustomerId=";
+
+        await dbConnection.ExecuteAsync(query, customer);
+      }
     }
   }
 }

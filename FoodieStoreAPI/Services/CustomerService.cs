@@ -48,9 +48,16 @@ namespace FoodieStoreAPI.Services
       throw new NotImplementedException();
     }
 
-    public void UpdateCustomer(Customer customer)
+    public async Task UpdateCustomer(Customer customer)
     {
-      throw new NotImplementedException();
+      Customer cust = new Customer()
+      {
+        Address = customer.Address,
+        City = customer.City,
+        PostalCode = customer.PostalCode,
+        Telephone = customer.Telephone
+      };
+      await _customerRepository.UpdateCustomer(cust);
     }
   }
 }
